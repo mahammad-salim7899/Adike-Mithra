@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+        <div class="welcome-content">
+            <div class="welcome-info">
+                <span class="greeting-text">Welcome back,</span>
+                <h1 class="user-name">{{ user.name }}</h1>
+                <div class="user-info-badges">
+                    <span class="info-badge">
+                        <i class="fas fa-map-marker-alt"></i> {{ user.location or 'Karnataka' }}
+                    </span>
+                    <span class="info-badge">
+                        <i class="fas fa-seedling"></i> {{ user.farm_size or 'Farm' }}
+                    </span>
+                    <span class="info-badge">
+                        <i class="fas fa-user-circle"></i> {{ user.user_type }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #4CAF50;">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ recent_detections|length }}</h3>
+                <p>Recent Detections</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #2196F3;">
+                <i class="fas fa-tint"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ recent_irrigation|length }}</h3>
+                <p>Irrigation Logs</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #FF9800;">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3>₹{{ latest_price.red_arecanut_price if latest_price else '0' }}</h3>
+                <p>Red Arecanut Price</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: #9C27B0;">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <h3>₹{{ latest_price.white_arecanut_price if latest_price else '0' }}</h3>
+                <p>White Arecanut Price</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Modules -->
+    <div class="modules-section">
+        <h2><i class="fas fa-th-large"></i> Quick Access</h2>
+        <div class="modules-grid">
+            <a href="{{ url_for('disease_detection') }}" class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>Disease Detection</h3>
+                <p>Upload images for AI-powered disease identification</p>
+            </a>
+
+            {% if user.user_type == 'Farmer' %}
+            <a href="{{ url_for('smart_irrigation') }}" class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <h3>Smart Irrigation</h3>
+                <p>Monitor soil moisture and control pump remotely</p>
+            </a>
+            {% endif %}
+
+            <a href="{{ url_for('market_prices') }}" class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Market Prices</h3>
+                <p>Track live market prices and predictions</p>
+            </a>
+
+            <a href="{{ url_for('disease_history') }}" class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3>Disease History</h3>
+                <p>View your disease detection records</p>
+            </a>
+
+            <a href="{{ url_for('price_prediction') }}" class="module-card">
+                <div class="module-icon">
+                    <i class="fas fa-chart-area"></i>
+                </div>
+                <h3>Price Prediction</h3>
+                <p>Future price forecasts and trends</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="activity-section">
+        <div class="activity-column">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2><i class="fas fa-clock"></i> Recent Disease Detections</h2>
+                {% if recent_detections %}
+                    <form method="POST" action="{{ url_for('clear_all_detections') }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to clear all detection records?');">
+                        <button type="submit" class="btn btn-danger btn-small">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+            {% if recent_detections %}
+                <div class="activity-list">
+                    {% for detection in recent_detections %}
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                {% if detection.disease_name == 'Healthy' %}
+                                    <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                                {% else %}
+                                    <i class="fas fa-exclamation-triangle" style="color: #FF9800;"></i>
+                                {% endif %}
+                            </div>
+                            <div class="activity-content">
+                                <h4>{{ detection.disease_name }}</h4>
+                                <p>Severity: {{ detection.severity }} | Confidence: {{ detection.confidence }}%</p>
+                                <small>{{ detection.detected_at.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                            </div>
+                            <div style="display: flex; gap: 5px;">
+                                <a href="{{ url_for('detection_result', detection_id=detection.id) }}" class="btn btn-small">View</a>
+                                <form method="POST" action="{{ url_for('delete_detection', detection_id=detection.id) }}" style="display: inline;" onsubmit="return confirm('Delete this detection record?');">
+                                    <button type="submit" class="btn btn-small btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-leaf"></i>
+                    <p>No disease detections yet. Upload your first image!</p>
+                    <a href="{{ url_for('disease_detection') }}" class="btn btn-primary">Upload Image</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="activity-column">
+            <h2><i class="fas fa-chart-pie"></i> Farm Health Insights</h2>
+            <div class="insights-card">
+                {% if insights.total > 0 %}
+                <!-- Health Score -->
+                <div class="insight-item health-score">
+                    <div class="insight-header">
+                        <div class="insight-icon" style="background: linear-gradient(135deg, #4CAF50, #388E3C);">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div>
+                            <h3>Farm Health Score</h3>
+                            <p class="insight-subtitle">Based on your detections</p>
+                        </div>
+                    </div>
+                    <div class="health-score-display">
+                        <div class="score-circle {% if insights.health_rate >= 75 %}score-excellent{% elif insights.health_rate >= 50 %}score-good{% else %}score-warning{% endif %}">
+                            <span class="score-value">{{ insights.health_rate }}%</span>
+                            <span class="score-label">Healthy</span>
+                        </div>
+                        <div class="score-details">
+                            <div class="score-detail-item">
+                                <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                                <span>{{ insights.healthy }} Healthy crops</span>
+                            </div>
+                            <div class="score-detail-item">
+                                <i class="fas fa-exclamation-triangle" style="color: #FF9800;"></i>
+                                <span>{{ insights.diseased }} Diseased crops</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detection Summary -->
+                <div class="insight-item">
+                    <div class="insight-stat-row">
+                        <div class="insight-stat">
+                            <i class="fas fa-camera" style="color: #2196F3;"></i>
+                            <div>
+                                <h4>{{ insights.total }}</h4>
+                                <p>Total Scans</p>
+                            </div>
+                        </div>
+                        <div class="insight-stat">
+                            <i class="fas fa-shield-alt" style="color: #4CAF50;"></i>
+                            <div>
+                                <h4>97.7%</h4>
+                                <p>AI Accuracy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Alert -->
+                {% if insights.recent_disease %}
+                <div class="insight-item alert-item">
+                    <div class="alert-badge">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="alert-content">
+                        <h4>Recent Disease Alert</h4>
+                        <p><strong>{{ insights.recent_disease }}</strong> detected in your latest scan</p>
+                        <a href="{{ url_for('disease_history') }}" class="btn btn-small btn-outline">View Details</a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="insight-item success-item">
+                    <div class="success-badge">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="success-content">
+                        <h4>All Clear!</h4>
+                        <p>No diseases detected in recent scans</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Quick Tip -->
+                <div class="insight-item tip-item">
+                    <div class="tip-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="tip-content">
+                        <h4>💡 Pro Tip</h4>
+                        <p>Regular monitoring helps catch diseases early. Scan your crops weekly for best results!</p>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Empty State -->
+                <div class="insights-empty">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>No Data Yet</h3>
+                    <p>Start detecting diseases to see your farm health insights</p>
+                    <a href="{{ url_for('disease_detection') }}" class="btn btn-primary">
+                        <i class="fas fa-camera"></i> Start Detection
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

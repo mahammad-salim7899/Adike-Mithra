@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <i class="fas fa-user-plus"></i>
+            <h2>Register with Adike Mitra</h2>
+            <p>Create your account to get started</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('register') }}" class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label for="phone">
+                    <i class="fas fa-phone"></i> Phone Number <span class="required">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="Enter 10-digit phone number" 
+                    maxlength="10"
+                    pattern="[0-9]{10}"
+                    required
+                >
+                <small>This will be used as your username</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email Address
+                </label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email address"
+                >
+                <small>Optional: For notifications and alerts</small>
+            </div>
+
+            <div class="form-group">
+                <label for="name">
+                    <i class="fas fa-user"></i> Full Name <span class="required">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="Enter your full name" 
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="location">
+                    <i class="fas fa-map-marker-alt"></i> Location
+                </label>
+                <input 
+                    type="text" 
+                    id="location" 
+                    name="location" 
+                    placeholder="Village/Taluk (e.g., Mangalore, Karnataka)"
+                >
+                <small>Optional: Helps provide localized weather data</small>
+            </div>
+
+            <div class="form-group">
+                <label for="farm_size">
+                    <i class="fas fa-expand-arrows-alt"></i> Farm Size
+                </label>
+                <input 
+                    type="text" 
+                    id="farm_size" 
+                    name="farm_size" 
+                    placeholder="e.g., 5 acres"
+                >
+                <small>Optional</small>
+            </div>
+
+            <div class="form-group">
+                <label for="user_type">
+                    <i class="fas fa-user-tag"></i> User Type <span class="required">*</span>
+                </label>
+                <select id="user_type" name="user_type" required>
+                    <option value="">Select user type</option>
+                    <option value="Farmer">Farmer</option>
+                    <option value="Developer">Developer/Admin</option>
+                </select>
+                <small>Choose 'Farmer' for regular use, 'Developer' for admin access</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password <span class="required">*</span>
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Create a password" 
+                    minlength="6"
+                    required
+                >
+                <small>Minimum 6 characters</small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password">
+                    <i class="fas fa-lock"></i> Confirm Password <span class="required">*</span>
+                </label>
+                <input 
+                    type="password" 
+                    id="confirm_password" 
+                    name="confirm_password" 
+                    placeholder="Re-enter password" 
+                    minlength="6"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const phone = document.getElementById('phone').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    // Validate phone number
+    if (phone.length !== 10 || !/^\d{10}$/.test(phone)) {
+        e.preventDefault();
+        alert('Please enter a valid 10-digit phone number');
+        return false;
+    }
+    
+    // Validate password match
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
+    
+    // Validate password length
+    if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long');
+        return false;
+    }
+});
+
+// Auto-format phone number (digits only)
+document.getElementById('phone').addEventListener('input', function(e) {
+    this.value = this.value.replace(/\D/g, '');
+});
+</script>
+{% endblock %}

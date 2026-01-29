@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Disease Detection - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-leaf"></i> AI-Powered Analysis</span>
+                <h1 class="user-name">Disease Detection</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="fas fa-brain"></i> Deep Learning Models
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="upload-section">
+        <div class="upload-card">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h2>Upload Image</h2>
+            <p>Select a clear image of arecanut leaf or fruit showing symptoms</p>
+
+            <form method="POST" action="{{ url_for('disease_detection') }}" enctype="multipart/form-data" id="uploadForm">
+                <div class="form-group">
+                    <label for="detection_type">
+                        <i class="fas fa-microscope"></i> Detection Type
+                    </label>
+                    <select id="detection_type" name="detection_type" class="form-control">
+                        <option value="both">Both (Leaf & Fruit)</option>
+                        <option value="yellow_leaf">Yellow Leaf Disease Only</option>
+                        <option value="fruit_rot">Fruit Rot (Koleroga) Only</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">
+                        <i class="fas fa-map-marker-alt"></i> Location (Optional)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="location" 
+                        name="location" 
+                        placeholder="Enter farm location"
+                    >
+                </div>
+
+                <div class="file-upload-wrapper">
+                    <input 
+                        type="file" 
+                        id="image" 
+                        name="image" 
+                        accept="image/png, image/jpeg, image/jpg, image/gif"
+                        required
+                    >
+                    <label for="image" class="file-upload-label">
+                        <i class="fas fa-image"></i>
+                        <span id="fileName">Choose an image file</span>
+                    </label>
+                </div>
+
+                <div id="imagePreview" class="image-preview"></div>
+
+                <button type="submit" class="btn btn-primary btn-large" id="submitBtn">
+                    <i class="fas fa-search"></i> Analyze Image with AI
+                </button>
+            </form>
+        </div>
+
+        <div class="info-card">
+            <div class="info-header">
+                <h3><i class="fas fa-info-circle"></i> Detection Information</h3>
+            </div>
+            
+            <div class="info-section">
+                <h4><i class="fas fa-file-image"></i> Image Requirements</h4>
+                <ul class="info-list">
+                    <li><i class="fas fa-check-circle"></i> Formats: PNG, JPG, JPEG, GIF</li>
+                    <li><i class="fas fa-check-circle"></i> Max size: 16MB</li>
+                    <li><i class="fas fa-check-circle"></i> Clear, well-lit images</li>
+                    <li><i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i> <strong>Only arecanut leaves or fruits</strong></li>
+                </ul>
+            </div>
+
+            <div class="info-section validation-warning">
+                <h4><i class="fas fa-exclamation-circle"></i> Important Notice</h4>
+                <ul class="info-list">
+                    <li><i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i> Upload ONLY arecanut plant images</li>
+                    <li><i class="fas fa-exclamation-triangle" style="color: #ff9800;"></i> Results are unreliable for other objects</li>
+                    <li><i class="fas fa-info-circle"></i> AI models trained on arecanut only</li>
+                </ul>
+            </div>
+
+            <div class="info-section">
+                <h4><i class="fas fa-chart-line"></i> What You'll Get</h4>
+                <ul class="info-list">
+                    <li><i class="fas fa-check-circle"></i> Disease identification</li>
+                    <li><i class="fas fa-check-circle"></i> Severity assessment</li>
+                    <li><i class="fas fa-check-circle"></i> Treatment recommendations</li>
+                    <li><i class="fas fa-check-circle"></i> Weather-based spraying advice</li>
+                </ul>
+            </div>
+
+            <div class="info-section ai-models">
+                <h4><i class="fas fa-robot"></i> AI Models</h4>
+                <div class="disease-badges">
+                    <div class="model-badge">
+                        <i class="fas fa-leaf"></i>
+                        <span class="model-name">Yellow Leaf Disease</span>
+                        <span class="model-accuracy">97.7%</span>
+                    </div>
+                    <div class="model-badge">
+                        <i class="fas fa-apple-alt"></i>
+                        <span class="model-name">Fruit Rot (Koleroga)</span>
+                        <span class="model-accuracy">98.9%</span>
+                    </div>
+                    <div class="model-badge">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="model-name">Healthy Detection</span>
+                        <span class="model-accuracy">99%+</span>
+                    </div>
+                </div>
+                <p class="model-footer">
+                    <i class="fas fa-database"></i> Trained on 1000+ images
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tips-section">
+        <h2><i class="fas fa-lightbulb"></i> Tips for Best Results</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <i class="fas fa-camera"></i>
+                <h3>Good Lighting</h3>
+                <p>Take photos in natural daylight for accurate color detection</p>
+            </div>
+            <div class="tip-card">
+                <i class="fas fa-eye"></i>
+                <h3>Clear Focus</h3>
+                <p>Ensure the leaf or fruit is in sharp focus</p>
+            </div>
+            <div class="tip-card">
+                <i class="fas fa-crop"></i>
+                <h3>Close-Up View</h3>
+                <p>Capture symptoms clearly with close-up shots</p>
+            </div>
+            <div class="tip-card">
+                <i class="fas fa-palette"></i>
+                <h3>True Colors</h3>
+                <p>Avoid filters or heavy editing of images</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="history-link">
+        <a href="{{ url_for('disease_history') }}" class="btn btn-secondary">
+            <i class="fas fa-history"></i> View Detection History
+        </a>
+    </div>
+</div>
+
+<!-- Processing Modal -->
+<div id="processingModal" class="modal">
+    <div class="modal-content processing-modal">
+        <div class="loader"></div>
+        <h2>Processing Image...</h2>
+        <p>Analyzing your image for disease detection. Please wait...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Image preview
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const fileName = document.getElementById('fileName');
+    const preview = document.getElementById('imagePreview');
+    
+    if (file) {
+        fileName.textContent = file.name;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview">
+                <p>Preview of selected image</p>
+            `;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+// Show processing modal on submit
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('image');
+    
+    if (!fileInput.files[0]) {
+        e.preventDefault();
+        alert('Please select an image file');
+        return;
+    }
+    
+    // Check file type
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+    if (!allowedTypes.includes(fileInput.files[0].type)) {
+        e.preventDefault();
+        alert('Invalid file type. Please upload PNG, JPG, JPEG, or GIF image.');
+        return;
+    }
+    
+    // Show processing modal
+    document.getElementById('processingModal').style.display = 'flex';
+});
+</script>
+{% endblock %}

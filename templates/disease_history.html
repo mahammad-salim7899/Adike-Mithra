@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Disease History - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-history"></i> Your Records</span>
+                <h1 class="user-name">Detection History</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="fas fa-clipboard-list"></i> {{ detections|length if detections else 0 }} Total
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {% if detections %}
+    <div class="history-stats">
+        <div class="stat-box stat-total">
+            <div class="stat-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ detections|length }}</h3>
+                <p>Total Detections</p>
+            </div>
+        </div>
+        <div class="stat-box stat-success">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ detections|selectattr('disease_name', 'equalto', 'Healthy')|list|length }}</h3>
+                <p>Healthy Results</p>
+            </div>
+        </div>
+        <div class="stat-box stat-warning">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ detections|rejectattr('disease_name', 'equalto', 'Healthy')|list|length }}</h3>
+                <p>Disease Detected</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="history-grid">
+        {% for detection in detections %}
+        <div class="history-card">
+            <div class="history-image">
+                <img src="{{ url_for('static', filename=detection.image_path.replace('static/', '')) }}" alt="Detection Image">
+                <div class="history-overlay">
+                    <span class="badge badge-{{ 'success' if detection.disease_name == 'Healthy' else 'warning' }}">
+                        {{ detection.disease_name }}
+                    </span>
+                </div>
+            </div>
+            <div class="history-content">
+                <div class="history-header">
+                    <h3>{{ detection.disease_name }}</h3>
+                    <span class="confidence-badge">{{ detection.confidence }}%</span>
+                </div>
+                
+                {% if detection.severity != 'None' %}
+                <div class="history-detail">
+                    <i class="fas fa-thermometer-half"></i>
+                    <span>Severity: <strong>{{ detection.severity }}</strong></span>
+                </div>
+                {% endif %}
+                
+                {% if detection.location %}
+                <div class="history-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ detection.location }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="history-detail">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ detection.detected_at.strftime('%B %d, %Y') }}</span>
+                </div>
+                
+                <div class="history-detail">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ detection.detected_at.strftime('%I:%M %p') }}</span>
+                </div>
+                
+                <a href="{{ url_for('detection_result', detection_id=detection.id) }}" class="btn btn-primary btn-small">
+                    <i class="fas fa-eye"></i> View Details
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state-large">
+        <i class="fas fa-leaf"></i>
+        <h2>No Disease Detections Yet</h2>
+        <p>Upload your first image to start tracking disease detections</p>
+        <a href="{{ url_for('disease_detection') }}" class="btn btn-primary btn-large">
+            <i class="fas fa-upload"></i> Upload Image
+        </a>
+    </div>
+    {% endif %}
+
+    <div class="action-buttons">
+        <a href="{{ url_for('disease_detection') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Detection
+        </a>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

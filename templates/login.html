@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <i class="fas fa-sign-in-alt"></i>
+            <h2>Login to Adike Mitra</h2>
+            <p>Enter your credentials to access your account</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('login') }}" class="auth-form" id="loginForm">
+            <div class="form-group">
+                <label for="phone">
+                    <i class="fas fa-phone"></i> Phone Number
+                </label>
+                <input 
+                    type="text" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="Enter 10-digit phone number" 
+                    maxlength="10"
+                    pattern="[0-9]{10}"
+                    required
+                >
+                <small>Enter your registered 10-digit phone number</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Enter your password" 
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const phone = document.getElementById('phone').value;
+    
+    if (phone.length !== 10 || !/^\d{10}$/.test(phone)) {
+        e.preventDefault();
+        alert('Please enter a valid 10-digit phone number');
+        return false;
+    }
+});
+
+// Auto-format phone number (digits only)
+document.getElementById('phone').addEventListener('input', function(e) {
+    this.value = this.value.replace(/\D/g, '');
+});
+</script>
+{% endblock %}

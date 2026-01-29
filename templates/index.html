@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1><i class="fas fa-seedling"></i> Adike Mitra</h1>
+        <p class="hero-subtitle">Your Smart Farming Assistant for Arecanut Cultivation</p>
+        <p class="hero-description">
+            Empowering farmers with <strong>AI-powered disease detection</strong> (97.7% accuracy), <strong>weather-based spraying advisory</strong>, 
+            <strong>smart irrigation monitoring</strong>, and <strong>real-time market prices</strong>. Transform your traditional farming practices with cutting-edge technology designed specifically for arecanut cultivation in Karnataka and across India.
+        </p>
+        {% if not session.user_id %}
+        <div class="hero-buttons">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">
+                <i class="fas fa-user-plus"></i> Get Started
+            </a>
+            <a href="{{ url_for('login') }}" class="btn btn-secondary btn-large">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+        {% else %}
+        <div class="hero-buttons">
+            <a href="{{ url_for('user_dashboard') }}" class="btn btn-primary btn-large">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="features-section">
+    <h2 class="section-title">Our Features</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <h3>Disease Detection</h3>
+            <p>Upload leaf or fruit images for instant AI-powered disease identification with treatment recommendations.</p>
+            {% if session.user_id %}
+            <a href="{{ url_for('disease_detection') }}" class="btn btn-small">Try Now</a>
+            {% endif %}
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-cloud-sun-rain"></i>
+            </div>
+            <h3>Weather Advisory</h3>
+            <p>Get smart spraying recommendations based on real-time weather data and 7-day forecasts.</p>
+            {% if session.user_id %}
+            <a href="{{ url_for('weather_advisory') }}" class="btn btn-small">Check Weather</a>
+            {% endif %}
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-tint"></i>
+            </div>
+            <h3>Smart Irrigation</h3>
+            <p>Monitor soil moisture, detect waterlogging, and control your irrigation pump remotely.</p>
+            {% if session.user_id %}
+            <a href="{{ url_for('smart_irrigation') }}" class="btn btn-small">Manage Irrigation</a>
+            {% endif %}
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Market Prices</h3>
+            <p>Track live arecanut prices from CAMPCO and local mandis with price prediction insights.</p>
+            {% if session.user_id %}
+            <a href="{{ url_for('market_prices') }}" class="btn btn-small">View Prices</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <h3 class="stat-number">{{ stats.farmers }}{% if stats.farmers >= 50 %}+{% endif %}</h3>
+            <p class="stat-label">Active Farmers</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-leaf"></i></div>
+            <h3 class="stat-number">{{ stats.accuracy }}%</h3>
+            <p class="stat-label">AI Accuracy</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
+            <h3 class="stat-number">{{ stats.detections }}{% if stats.detections >= 100 %}+{% endif %}</h3>
+            <p class="stat-label">Detections Analyzed</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <h3 class="stat-number">24/7</h3>
+            <p class="stat-label">Support Available</p>
+        </div>
+    </div>
+</div>
+
+<div class="about-section">
+    <h2 class="section-title">About Adike Mitra</h2>
+    <div class="about-content">
+        <p>
+            <strong>Adike Mitra</strong> is a comprehensive digital platform designed specifically for arecanut farmers 
+            in Karnataka and across India. Our mission is to bring modern technology to traditional farming practices, 
+            helping farmers make informed decisions and improve crop yields.
+        </p>
+        <p>
+            We combine <strong>artificial intelligence</strong>, <strong>IoT simulation</strong>, <strong>weather forecasting</strong>, 
+            and <strong>market analytics</strong> to provide a complete farming solution in one easy-to-use platform.
+        </p>
+        <div class="about-highlights">
+            <div class="highlight-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Free for all farmers</span>
+            </div>
+            <div class="highlight-item">
+                <i class="fas fa-check-circle"></i>
+                <span>98.9% disease detection accuracy</span>
+            </div>
+            <div class="highlight-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Real-time market insights</span>
+            </div>
+            <div class="highlight-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Smart irrigation monitoring</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="team-section">
+    <h2 class="section-title">Meet Our Team</h2>
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="team-avatar">
+                <img src="{{ url_for('static', filename='images/Mohammad Salim.jpg') }}" alt="Mahammad Salim">
+            </div>
+            <h3>Mahammad Salim</h3>
+            <p>Developer</p>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">
+                <img src="{{ url_for('static', filename='images/Mohammad Fawaz.jpeg') }}" alt="Mohammad Fawaz">
+            </div>
+            <h3>Mohammad Fawaz</h3>
+            <p>Developer</p>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">
+                <img src="{{ url_for('static', filename='images/Shudais.jpeg') }}" alt="Shudais Abdul Raheem">
+            </div>
+            <h3>Shudais Abdul Raheem</h3>
+            <p>Developer</p>
+        </div>
+        <div class="team-card">
+            <div class="team-avatar">
+                <img src="{{ url_for('static', filename='images/Irfaz.jpeg') }}" alt="Ibrahim Mohammed Irfaz">
+            </div>
+            <h3>Ibrahim Mohammed Irfaz</h3>
+            <p>Developer</p>
+        </div>
+    </div>
+</div>
+
+{% if not session.user_id %}
+<div class="cta-section">
+    <h2>Ready to Get Started?</h2>
+    <p>Join farmers already using Adike Mitra to improve their yields.</p>
+    <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">
+        <i class="fas fa-rocket"></i> Register Now
+    </a>
+</div>
+{% endif %}
+{% endblock %}

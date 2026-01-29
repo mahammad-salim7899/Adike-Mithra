@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}Smart Irrigation - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-tint"></i> IoT Automation</span>
+                <h1 class="user-name">Smart Irrigation System</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="fas fa-microchip"></i> Real-time Monitoring
+                </span>
+            </div>
+        </div>
+    </div>
+
+    {% if message %}
+    <div class="irrigation-alert">
+        <i class="fas fa-info-circle"></i>
+        <p>{{ message }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Pump Control -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-power-off"></i> Remote Pump Control</h2>
+        </div>
+        <div class="pump-control-grid">
+            <div class="pump-status-card">
+                <div class="pump-icon-wrapper {% if pump.status == 'ON' %}pump-on{% else %}pump-off{% endif %}">
+                    <i class="fas fa-water"></i>
+                </div>
+                <h3>Pump Status</h3>
+                <div class="status-badge-large status-{{ pump.status.lower() }}">
+                    {{ pump.status }}
+                </div>
+                <p class="last-updated"><i class="far fa-clock"></i> {{ pump.updated_at.strftime('%b %d, %Y at %I:%M %p') }}</p>
+            </div>
+
+            <div class="pump-control-buttons">
+                <form method="POST" action="{{ url_for('smart_irrigation') }}">
+                    <input type="hidden" name="action" value="ON">
+                    <button type="submit" class="btn-pump btn-pump-on" {% if pump.status == 'ON' %}disabled{% endif %}>
+                        <i class="fas fa-play-circle"></i>
+                        Turn ON
+                    </button>
+                </form>
+
+                <form method="POST" action="{{ url_for('smart_irrigation') }}">
+                    <input type="hidden" name="action" value="OFF">
+                    <button type="submit" class="btn-pump btn-pump-off" {% if pump.status == 'OFF' %}disabled{% endif %}>
+                        <i class="fas fa-stop-circle"></i>
+                        Turn OFF
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Soil Moisture Monitoring -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-thermometer-half"></i> Soil Moisture Monitoring</h2>
+            <span class="auto-refresh-badge"><i class="fas fa-sync-alt"></i> Auto-refresh every 30s</span>
+        </div>
+        <div class="moisture-monitoring-grid">
+            <div class="moisture-display-card">
+                <div class="moisture-gauge-wrapper" id="moistureGaugeWrapper">
+                    <div class="moisture-gauge">
+                        <div class="gauge-background">
+                            <div class="gauge-fill" id="gaugeFill" style="width: 50%"></div>
+                        </div>
+                        <div class="gauge-percentage" id="gaugePercentage">50%</div>
+                    </div>
+                    <div class="moisture-status-badge" id="moistureStatus">
+                        <span class="status-badge status-optimal"><i class="fas fa-check"></i> Optimal</span>
+                    </div>
+                </div>
+                <div class="moisture-info-text">
+                    <p id="moistureMessage">Soil moisture levels are optimal for crop health.</p>
+                    <p class="sensor-info"><i class="fas fa-microchip"></i> IoT Sensor #001 - Active</p>
+                </div>
+            </div>
+
+            <div class="moisture-guide-card">
+                <h3><i class="fas fa-info-circle"></i> Moisture Levels Guide</h3>
+                <div class="moisture-levels">
+                    <div class="level-item low">
+                        <div class="level-indicator"></div>
+                        <div class="level-content">
+                            <strong>0-30%:</strong> Low - Irrigation required
+                        </div>
+                    </div>
+                    <div class="level-item optimal">
+                        <div class="level-indicator"></div>
+                        <div class="level-content">
+                            <strong>30-80%:</strong> Optimal - Good for crops
+                        </div>
+                    </div>
+                    <div class="level-item high">
+                        <div class="level-indicator"></div>
+                        <div class="level-content">
+                            <strong>80-100%:</strong> High - Risk of waterlogging
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-preview">
+                    <canvas id="moistureChart" width="100" height="60"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Irrigation History -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-history"></i> Irrigation Activity Log</h2>
+        </div>
+        {% if history %}
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Action Type</th>
+                        <th>Pump Status</th>
+                        <th>Soil Moisture</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in history %}
+                    <tr>
+                        <td>{{ log.logged_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <span class="badge badge-{{ 'info' if log.action_type == 'Simulation' else 'primary' }}">
+                                {{ log.action_type }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ log.pump_status.lower() if log.pump_status else 'unknown' }}">
+                                {{ log.pump_status or 'N/A' }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if log.soil_moisture %}
+                                {{ log.soil_moisture }}%
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ log.message }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <p>No irrigation activity logged yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- IoT System Info -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-microchip"></i> About Smart Irrigation</h2>
+        </div>
+        <div class="info-grid">
+            <div class="info-card">
+                <i class="fas fa-microchip"></i>
+                <h3>IoT Sensors</h3>
+                <p>In production, real soil moisture sensors would provide automatic readings.</p>
+            </div>
+
+            <div class="info-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Remote Control</h3>
+                <p>Control your irrigation pump from anywhere using this web interface.</p>
+            </div>
+
+            <div class="info-card">
+                <i class="fas fa-bell"></i>
+                <h3>Alerts</h3>
+                <p>Get notifications when soil moisture is too low or waterlogging is detected.</p>
+            </div>
+
+            <div class="info-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Analytics</h3>
+                <p>Track irrigation patterns and optimize water usage over time.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Irrigation Tips -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-lightbulb"></i> Irrigation Best Practices</h2>
+        </div>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <i class="fas fa-clock"></i>
+                <h3>Best Time</h3>
+                <p>Water early morning (6-8 AM) or evening (5-7 PM) to minimize evaporation</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-tint"></i>
+                <h3>Water Amount</h3>
+                <p>Arecanut requires regular watering but avoid waterlogging</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>Frequency</h3>
+                <p>During summer: every 2-3 days. During monsoon: as needed</p>
+            </div>
+
+            <div class="tip-card">
+                <i class="fas fa-droplet"></i>
+                <h3>Drip Irrigation</h3>
+                <p>Consider drip irrigation for efficient water usage and better results</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Auto-updating soil moisture simulation
+let currentMoisture = 50;
+let moistureHistory = [50, 48, 52, 51, 49, 50, 52, 51, 50, 48];
+let updateInterval;
+
+// Initialize chart
+const ctx = document.getElementById('moistureChart');
+const moistureChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['', '', '', '', '', '', '', '', '', ''],
+        datasets: [{
+            label: 'Moisture %',
+            data: moistureHistory,
+            borderColor: '#4CAF50',
+            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+            borderWidth: 2,
+            tension: 0.4,
+            pointRadius: 0,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+        },
+        scales: {
+            y: {
+                display: false,
+                min: 0,
+                max: 100
+            },
+            x: {
+                display: false
+            }
+        }
+    }
+});
+
+function updateMoistureDisplay(moisture) {
+    const gaugeFill = document.getElementById('gaugeFill');
+    const gaugePercentage = document.getElementById('gaugePercentage');
+    const moistureStatus = document.getElementById('moistureStatus');
+    const moistureMessage = document.getElementById('moistureMessage');
+    
+    // Update gauge
+    gaugeFill.style.width = moisture + '%';
+    gaugePercentage.textContent = moisture + '%';
+    
+    // Update status and message
+    let statusHTML, message, color;
+    if (moisture < 30) {
+        statusHTML = '<span class="status-badge status-low"><i class="fas fa-arrow-down"></i> Low - Action Required</span>';
+        message = 'Soil moisture is low. Irrigation is required to maintain crop health.';
+        color = '#FF5722';
+    } else if (moisture > 80) {
+        statusHTML = '<span class="status-badge status-high"><i class="fas fa-arrow-up"></i> High - Waterlogging Risk</span>';
+        message = 'Soil moisture is high. Stop irrigation to prevent waterlogging.';
+        color = '#2196F3';
+    } else {
+        statusHTML = '<span class="status-badge status-optimal"><i class="fas fa-check"></i> Optimal</span>';
+        message = 'Soil moisture levels are optimal for crop health.';
+        color = '#4CAF50';
+    }
+    
+    moistureStatus.innerHTML = statusHTML;
+    moistureMessage.textContent = message;
+    gaugeFill.style.background = `linear-gradient(90deg, ${color}, ${color}dd)`;
+}
+
+function simulateMoistureUpdate() {
+    // Simulate realistic moisture changes (±1-3%)
+    const change = (Math.random() - 0.5) * 4;
+    currentMoisture = Math.max(0, Math.min(100, currentMoisture + change));
+    currentMoisture = Math.round(currentMoisture);
+    
+    // Update display
+    updateMoistureDisplay(currentMoisture);
+    
+    // Update history
+    moistureHistory.push(currentMoisture);
+    if (moistureHistory.length > 10) {
+        moistureHistory.shift();
+    }
+    
+    // Update chart
+    moistureChart.data.datasets[0].data = moistureHistory;
+    moistureChart.update('none');
+}
+
+// Initialize and start auto-update
+updateMoistureDisplay(currentMoisture);
+updateInterval = setInterval(simulateMoistureUpdate, 30000); // Update every 30 seconds
+
+// Update every 3 seconds for demo purposes (change to 30000 for production)
+setInterval(simulateMoistureUpdate, 3000);
+</script>
+{% endblock %}

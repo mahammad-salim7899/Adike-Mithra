@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}All Users - Admin - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-users"></i> User Management</span>
+                <h1 class="user-name">Registered Users</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="fas fa-user-check"></i> {{ all_users|length }} Total Users
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Users Table -->
+    <div class="table-section">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>User Type</th>
+                        <th>Farm Size</th>
+                        <th>Registered</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in all_users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.phone }}</td>
+                        <td>{{ user.location or 'N/A' }}</td>
+                        <td>
+                            <span class="badge badge-{{ 'primary' if user.user_type == 'Developer' else 'success' }}">
+                                {{ user.user_type }}
+                            </span>
+                        </td>
+                        <td>{{ user.farm_size or 'N/A' }}</td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

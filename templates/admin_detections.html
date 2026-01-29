@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}All Detections - Admin - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-leaf"></i> Disease Detections</span>
+                <h1 class="user-name">All Detection Records</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="fas fa-clipboard-list"></i> {{ all_detections|length }} Total Records
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- All Detections Table -->
+    <div class="table-section">
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Disease</th>
+                        <th>Severity</th>
+                        <th>Confidence</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detection in all_detections %}
+                    <tr>
+                        <td>{{ detection.id }}</td>
+                        <td>{{ detection.user.name }}</td>
+                        <td>
+                            <span class="badge badge-{{ 'success' if detection.disease_name == 'Healthy' else 'warning' }}">
+                                {{ detection.disease_name }}
+                            </span>
+                        </td>
+                        <td>{{ detection.severity }}</td>
+                        <td>{{ detection.confidence }}%</td>
+                        <td>{{ detection.location or 'N/A' }}</td>
+                        <td>{{ detection.detected_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <a href="{{ url_for('detection_result', detection_id=detection.id) }}" class="btn btn-small">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

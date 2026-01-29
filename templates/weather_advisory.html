@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Weather Advisory - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1><i class="fas fa-cloud-sun"></i> Weather-Based Spraying Advisory</h1>
+        <p>Location: {{ location }}</p>
+    </div>
+
+    <!-- Smart Advisory Banner -->
+    <div class="advisory-banner risk-{{ risk_level }}">
+        <div class="advisory-icon">
+            {% if risk_level == 'high' %}
+                <i class="fas fa-exclamation-triangle"></i>
+            {% elif risk_level == 'medium' %}
+                <i class="fas fa-exclamation-circle"></i>
+            {% else %}
+                <i class="fas fa-check-circle"></i>
+            {% endif %}
+        </div>
+        <div class="advisory-content">
+            <h2>
+                {% if risk_level == 'high' %}
+                    ⚠️ High Risk - Do Not Spray
+                {% elif risk_level == 'medium' %}
+                    ⚡ Medium Risk - Proceed with Caution
+                {% else %}
+                    ✅ Low Risk - Safe to Spray
+                {% endif %}
+            </h2>
+            <p>{{ advisory }}</p>
+        </div>
+    </div>
+
+    <!-- Current Weather -->
+    <div class="weather-section">
+        <h2><i class="fas fa-temperature-high"></i> Current Weather Conditions</h2>
+        <div class="current-weather-grid">
+            <div class="weather-card">
+                <div class="weather-icon">
+                    <i class="fas fa-thermometer-half"></i>
+                </div>
+                <h3>{{ current_weather.temperature }}°C</h3>
+                <p>Temperature</p>
+            </div>
+
+            <div class="weather-card">
+                <div class="weather-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <h3>{{ current_weather.humidity }}%</h3>
+                <p>Humidity</p>
+            </div>
+
+            <div class="weather-card">
+                <div class="weather-icon">
+                    <i class="fas fa-cloud-rain"></i>
+                </div>
+                <h3>{{ current_weather.rain_probability }}%</h3>
+                <p>Rain Probability</p>
+            </div>
+
+            <div class="weather-card">
+                <div class="weather-icon">
+                    <i class="fas fa-wind"></i>
+                </div>
+                <h3>{{ current_weather.wind_speed }} km/h</h3>
+                <p>Wind Speed</p>
+            </div>
+
+            <div class="weather-card weather-condition">
+                <div class="weather-icon">
+                    {% if current_weather.condition == 'Sunny' %}
+                        <i class="fas fa-sun"></i>
+                    {% elif current_weather.condition == 'Rainy' %}
+                        <i class="fas fa-cloud-rain"></i>
+                    {% elif current_weather.condition == 'Cloudy' %}
+                        <i class="fas fa-cloud"></i>
+                    {% else %}
+                        <i class="fas fa-cloud-sun"></i>
+                    {% endif %}
+                </div>
+                <h3>{{ current_weather.condition }}</h3>
+                <p>Condition</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7-Day Forecast -->
+    <div class="forecast-section">
+        <h2><i class="fas fa-calendar-week"></i> 7-Day Weather Forecast</h2>
+        <div class="forecast-calendar">
+            {% for day in forecast %}
+            <div class="forecast-day {% if loop.first %}today{% endif %}">
+                <div class="forecast-header">
+                    <h3>{{ day.day }}</h3>
+                    <p>{{ day.date }}</p>
+                </div>
+                <div class="forecast-icon">
+                    {% if day.condition == 'Sunny' %}
+                        <i class="fas fa-sun"></i>
+                    {% elif day.condition == 'Rainy' %}
+                        <i class="fas fa-cloud-rain"></i>
+                    {% elif day.condition == 'Cloudy' %}
+                        <i class="fas fa-cloud"></i>
+                    {% else %}
+                        <i class="fas fa-cloud-sun"></i>
+                    {% endif %}
+                </div>
+                <div class="forecast-temp">
+                    <span class="temp-max">{{ day.temp_max }}°</span>
+                    <span class="temp-min">{{ day.temp_min }}°</span>
+                </div>
+                <div class="forecast-rain">
+                    <i class="fas fa-tint"></i> {{ day.rain_probability }}%
+                </div>
+                <div class="forecast-risk">
+                    {% if day.rain_probability > 60 %}
+                        <span class="risk-badge risk-high">High Risk</span>
+                    {% elif day.rain_probability > 30 %}
+                        <span class="risk-badge risk-medium">Medium Risk</span>
+                    {% else %}
+                        <span class="risk-badge risk-low">Safe</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Spraying Guidelines -->
+    <div class="guidelines-section">
+        <h2><i class="fas fa-spray-can"></i> Spraying Guidelines</h2>
+        <div class="guidelines-grid">
+            <div class="guideline-card">
+                <i class="fas fa-clock"></i>
+                <h3>Best Time</h3>
+                <p>Early morning (6-10 AM) or late evening (4-6 PM)</p>
+            </div>
+
+            <div class="guideline-card">
+                <i class="fas fa-wind"></i>
+                <h3>Wind Speed</h3>
+                <p>Ideal: Below 10 km/h. Avoid if above 15 km/h</p>
+            </div>
+
+            <div class="guideline-card">
+                <i class="fas fa-thermometer-half"></i>
+                <h3>Temperature</h3>
+                <p>Optimal: 20-30°C. Avoid extreme heat or cold</p>
+            </div>
+
+            <div class="guideline-card">
+                <i class="fas fa-cloud-rain"></i>
+                <h3>Rain</h3>
+                <p>Wait 24-48 hours after rain before spraying</p>
+            </div>
+
+            <div class="guideline-card">
+                <i class="fas fa-tint"></i>
+                <h3>Humidity</h3>
+                <p>Ideal: 60-80%. Too high or low reduces effectiveness</p>
+            </div>
+
+            <div class="guideline-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Safety</h3>
+                <p>Always wear protective equipment while spraying</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Alerts -->
+    <div class="alerts-section">
+        <h2><i class="fas fa-bell"></i> Weather Alerts & Recommendations</h2>
+        <div class="alerts-container">
+            {% set has_alerts = false %}
+            
+            {% if current_weather.rain_probability > 60 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <strong>Heavy Rain Expected!</strong>
+                    <p>High chance of rainfall ({{ current_weather.rain_probability }}%). Postpone all spraying activities.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_weather.wind_speed > 15 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-warning">
+                <i class="fas fa-wind"></i>
+                <div>
+                    <strong>High Wind Alert!</strong>
+                    <p>Wind speed is {{ current_weather.wind_speed }} km/h. This may affect spray effectiveness and cause drift.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_weather.temperature > 35 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-warning">
+                <i class="fas fa-temperature-high"></i>
+                <div>
+                    <strong>High Temperature Alert!</strong>
+                    <p>Temperature is {{ current_weather.temperature }}°C. Spray during cooler hours (6-10 AM or 4-6 PM) to avoid evaporation.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_weather.rain_probability > 30 and current_weather.rain_probability <= 60 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-warning">
+                <i class="fas fa-cloud-rain"></i>
+                <div>
+                    <strong>Moderate Rain Possibility</strong>
+                    <p>{{ current_weather.rain_probability }}% chance of rain. Monitor weather closely before spraying.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_weather.wind_speed > 10 and current_weather.wind_speed <= 15 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-info">
+                <i class="fas fa-wind"></i>
+                <div>
+                    <strong>Moderate Wind</strong>
+                    <p>Wind speed is {{ current_weather.wind_speed }} km/h. Use caution when spraying to minimize drift.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_weather.humidity > 80 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-info">
+                <i class="fas fa-tint"></i>
+                <div>
+                    <strong>High Humidity</strong>
+                    <p>Humidity is {{ current_weather.humidity }}%. This may slow drying time for sprays.</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if current_weather.rain_probability <= 30 and current_weather.wind_speed <= 10 and current_weather.temperature <= 35 %}
+            {% set has_alerts = true %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <strong>Favorable Conditions!</strong>
+                    <p>Weather conditions are ideal for pesticide or fertilizer application. Best time: Early morning (6-10 AM) or late evening (4-6 PM).</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if not has_alerts %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Normal Conditions</strong>
+                    <p>Current weather conditions are acceptable for spraying. Follow standard guidelines for best results.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

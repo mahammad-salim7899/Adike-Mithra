@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+
+{% block title %}System Settings - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <!-- Header -->
+    <div class="settings-header">
+        <div class="header-content">
+            <div>
+                <a href="{{ url_for('admin_dashboard') }}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <h1><i class="fas fa-cog"></i> System Settings</h1>
+                <p class="settings-subtitle">Configure and manage system parameters</p>
+            </div>
+            <div class="header-actions">
+                <button onclick="showExportModal()" class="btn btn-outline">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Overview Stats -->
+    <div class="stats-overview">
+        <div class="overview-card">
+            <div class="overview-icon" style="background: linear-gradient(135deg, #673AB7, #512DA8);">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="overview-content">
+                <h3>{{ total_users }}</h3>
+                <p>Total Users</p>
+            </div>
+        </div>
+        <div class="overview-card">
+            <div class="overview-icon" style="background: linear-gradient(135deg, #4CAF50, #388E3C);">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <div class="overview-content">
+                <h3>{{ total_detections }}</h3>
+                <p>Detections</p>
+            </div>
+        </div>
+        <div class="overview-card">
+            <div class="overview-icon" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
+                <i class="fas fa-tint"></i>
+            </div>
+            <div class="overview-content">
+                <h3>{{ total_irrigation }}</h3>
+                <p>Irrigation Logs</p>
+            </div>
+        </div>
+        <div class="overview-card">
+            <div class="overview-icon" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="overview-content">
+                <h3>{{ total_prices }}</h3>
+                <p>Price Records</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Tabs -->
+    <div class="settings-tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'general')">
+            <i class="fas fa-sliders-h"></i> General
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'detection')">
+            <i class="fas fa-microscope"></i> Detection
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'irrigation')">
+            <i class="fas fa-tint"></i> Irrigation
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'notifications')">
+            <i class="fas fa-bell"></i> Notifications
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'activity')">
+            <i class="fas fa-history"></i> Recent Activity
+        </button>
+    </div>
+
+    <!-- Settings Form -->
+    <form method="POST" action="{{ url_for('update_system_settings') }}" class="settings-form">
+        <!-- General Settings Tab -->
+        <div id="general" class="tab-content active">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-sliders-h"></i> General Settings</h2>
+                    <p>Configure basic system parameters</p>
+                </div>
+                
+                <div class="settings-grid">
+                    {% for setting in general_settings %}
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label for="setting_{{ setting.setting_key }}">{{ setting.setting_key.replace('_', ' ').title() }}</label>
+                            <p class="setting-description">{{ setting.description }}</p>
+                        </div>
+                        <div class="setting-control">
+                            {% if setting.setting_type == 'boolean' %}
+                                <label class="switch">
+                                    <input type="checkbox" name="setting_{{ setting.setting_key }}" 
+                                           {% if setting.setting_value == 'true' %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                            {% elif setting.setting_type == 'number' %}
+                                <input type="number" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" step="0.01" class="setting-input">
+                            {% else %}
+                                <input type="text" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" class="setting-input">
+                            {% endif %}
+                            <button type="button" class="btn-icon" onclick="resetSetting('{{ setting.setting_key }}')" 
+                                    title="Reset to default">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        {% if setting.updated_by %}
+                        <div class="setting-meta">
+                            <small>Last updated by {{ setting.updated_by }} on {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Detection Settings Tab -->
+        <div id="detection" class="tab-content">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-microscope"></i> Disease Detection Settings</h2>
+                    <p>Configure AI model and detection parameters</p>
+                </div>
+                
+                <div class="settings-grid">
+                    {% for setting in detection_settings %}
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label for="setting_{{ setting.setting_key }}">{{ setting.setting_key.replace('_', ' ').title() }}</label>
+                            <p class="setting-description">{{ setting.description }}</p>
+                        </div>
+                        <div class="setting-control">
+                            {% if setting.setting_type == 'boolean' %}
+                                <label class="switch">
+                                    <input type="checkbox" name="setting_{{ setting.setting_key }}" 
+                                           {% if setting.setting_value == 'true' %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                            {% elif setting.setting_type == 'number' %}
+                                <input type="number" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" step="0.01" class="setting-input">
+                            {% else %}
+                                <input type="text" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" class="setting-input">
+                            {% endif %}
+                            <button type="button" class="btn-icon" onclick="resetSetting('{{ setting.setting_key }}')" 
+                                    title="Reset to default">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        {% if setting.updated_by %}
+                        <div class="setting-meta">
+                            <small>Last updated by {{ setting.updated_by }} on {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Irrigation Settings Tab -->
+        <div id="irrigation" class="tab-content">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-tint"></i> Smart Irrigation Settings</h2>
+                    <p>Configure irrigation automation and thresholds</p>
+                </div>
+                
+                <div class="settings-grid">
+                    {% for setting in irrigation_settings %}
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label for="setting_{{ setting.setting_key }}">{{ setting.setting_key.replace('_', ' ').title() }}</label>
+                            <p class="setting-description">{{ setting.description }}</p>
+                        </div>
+                        <div class="setting-control">
+                            {% if setting.setting_type == 'boolean' %}
+                                <label class="switch">
+                                    <input type="checkbox" name="setting_{{ setting.setting_key }}" 
+                                           {% if setting.setting_value == 'true' %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                            {% elif setting.setting_type == 'number' %}
+                                <input type="number" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" step="0.01" class="setting-input">
+                            {% else %}
+                                <input type="text" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" class="setting-input">
+                            {% endif %}
+                            <button type="button" class="btn-icon" onclick="resetSetting('{{ setting.setting_key }}')" 
+                                    title="Reset to default">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        {% if setting.updated_by %}
+                        <div class="setting-meta">
+                            <small>Last updated by {{ setting.updated_by }} on {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Settings Tab -->
+        <div id="notifications" class="tab-content">
+            <div class="settings-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bell"></i> Notification Settings</h2>
+                    <p>Manage system notifications and alerts</p>
+                </div>
+                
+                <div class="settings-grid">
+                    {% for setting in notification_settings %}
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <label for="setting_{{ setting.setting_key }}">{{ setting.setting_key.replace('_', ' ').title() }}</label>
+                            <p class="setting-description">{{ setting.description }}</p>
+                        </div>
+                        <div class="setting-control">
+                            {% if setting.setting_type == 'boolean' %}
+                                <label class="switch">
+                                    <input type="checkbox" name="setting_{{ setting.setting_key }}" 
+                                           {% if setting.setting_value == 'true' %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                            {% elif setting.setting_type == 'number' %}
+                                <input type="number" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" step="0.01" class="setting-input">
+                            {% else %}
+                                <input type="text" name="setting_{{ setting.setting_key }}" 
+                                       value="{{ setting.setting_value }}" class="setting-input">
+                            {% endif %}
+                            <button type="button" class="btn-icon" onclick="resetSetting('{{ setting.setting_key }}')" 
+                                    title="Reset to default">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        {% if setting.updated_by %}
+                        <div class="setting-meta">
+                            <small>Last updated by {{ setting.updated_by }} on {{ setting.updated_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Tab -->
+        <div id="activity" class="tab-content">
+            <div class="activity-section">
+                <div class="activity-column">
+                    <h3><i class="fas fa-user-plus"></i> Recent User Registrations</h3>
+                    <div class="activity-list">
+                        {% for user in recent_users %}
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: #673AB7;">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>{{ user.name }}</h4>
+                                <p>{{ user.user_type }} from {{ user.location or 'Unknown' }}</p>
+                                <small>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="activity-column">
+                    <h3><i class="fas fa-leaf"></i> Recent Disease Detections</h3>
+                    <div class="activity-list">
+                        {% for detection in recent_detections %}
+                        <div class="activity-item">
+                            <div class="activity-icon" style="background: {% if detection.disease_name == 'Healthy' %}#4CAF50{% else %}#FF5722{% endif %};">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>{{ detection.disease_name }}</h4>
+                                <p>Confidence: {{ '%.1f' | format(detection.confidence * 100) }}%</p>
+                                <small>{{ detection.detected_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Save Button (Not shown in Activity tab) -->
+        <div class="form-actions" id="saveButton">
+            <button type="submit" class="btn btn-primary btn-large">
+                <i class="fas fa-save"></i> Save All Settings
+            </button>
+            <button type="button" class="btn btn-secondary btn-large" onclick="window.location.href='{{ url_for('admin_dashboard') }}'">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Export Modal -->
+<div id="exportModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-download"></i> Export System Data</h2>
+            <span class="close" onclick="closeExportModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Select the type of data you want to export:</p>
+            <div class="export-options">
+                <a href="{{ url_for('export_system_data', data_type='users') }}" class="export-option">
+                    <div class="export-icon" style="background: #673AB7;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <h3>Users Data</h3>
+                        <p>Export all user information</p>
+                    </div>
+                </a>
+                <a href="{{ url_for('export_system_data', data_type='detections') }}" class="export-option">
+                    <div class="export-icon" style="background: #4CAF50;">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <div>
+                        <h3>Detection Records</h3>
+                        <p>Export all disease detections</p>
+                    </div>
+                </a>
+                <a href="{{ url_for('export_system_data', data_type='settings') }}" class="export-option">
+                    <div class="export-icon" style="background: #FF9800;">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div>
+                        <h3>System Settings</h3>
+                        <p>Export current configurations</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Tab switching
+function openTab(evt, tabName) {
+    const tabContents = document.getElementsByClassName('tab-content');
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+    }
+    
+    const tabBtns = document.getElementsByClassName('tab-btn');
+    for (let i = 0; i < tabBtns.length; i++) {
+        tabBtns[i].classList.remove('active');
+    }
+    
+    document.getElementById(tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
+    
+    // Hide save button on activity tab
+    const saveButton = document.getElementById('saveButton');
+    if (tabName === 'activity') {
+        saveButton.style.display = 'none';
+    } else {
+        saveButton.style.display = 'flex';
+    }
+}
+
+// Reset individual setting
+function resetSetting(settingKey) {
+    if (confirm(`Are you sure you want to reset "${settingKey}" to its default value?`)) {
+        fetch(`{{ url_for('reset_setting', setting_key='') }}${settingKey}`, {
+            method: 'POST',
+        })
+        .then(() => {
+            window.location.reload();
+        });
+    }
+}
+
+// Export modal
+function showExportModal() {
+    document.getElementById('exportModal').style.display = 'flex';
+}
+
+function closeExportModal() {
+    document.getElementById('exportModal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('exportModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Form validation
+document.querySelector('.settings-form').addEventListener('submit', function(e) {
+    const confidence = document.querySelector('input[name="setting_detection_confidence_threshold"]');
+    if (confidence && (parseFloat(confidence.value) < 0 || parseFloat(confidence.value) > 1)) {
+        e.preventDefault();
+        alert('Detection confidence threshold must be between 0 and 1');
+        return false;
+    }
+    
+    const moisture = document.querySelector('input[name="setting_soil_moisture_threshold"]');
+    if (moisture && (parseFloat(moisture.value) < 0 || parseFloat(moisture.value) > 100)) {
+        e.preventDefault();
+        alert('Soil moisture threshold must be between 0 and 100');
+        return false;
+    }
+});
+</script>
+{% endblock %}

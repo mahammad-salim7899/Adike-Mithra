@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Price Prediction - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-chart-area"></i> AI Forecast</span>
+                <h1 class="user-name">Arecanut Price Prediction</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="fas fa-brain"></i> ML-Powered
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Summary -->
+    <div class="prediction-info-grid">
+        <div class="prediction-info-box">
+            <div class="info-box-icon history">
+                <i class="fas fa-history"></i>
+            </div>
+            <div class="info-box-content">
+                <h3>Historical Period</h3>
+                <p>Last 30 Days</p>
+            </div>
+        </div>
+        <div class="prediction-info-box">
+            <div class="info-box-icon prediction">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="info-box-content">
+                <h3>Prediction Period</h3>
+                <p>Next 15 Days</p>
+            </div>
+        </div>
+        <div class="prediction-info-box">
+            <div class="info-box-icon trend">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="info-box-content">
+                <h3>Trend Analysis</h3>
+                <p>ML-Based Forecast</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prediction Chart -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-chart-line"></i> Price Forecast</h2>
+        </div>
+        <div class="chart-controls">
+            <button class="chart-btn active" onclick="showChart('both')">
+                <i class="fas fa-layer-group"></i> Both
+            </button>
+            <button class="chart-btn" onclick="showChart('red')">
+                <i class="fas fa-seedling"></i> Red Only
+            </button>
+            <button class="chart-btn" onclick="showChart('white')">
+                <i class="fas fa-leaf"></i> White Only
+            </button>
+        </div>
+        <div class="chart-container large">
+            <canvas id="predictionChart"></canvas>
+        </div>
+        <div class="chart-info-boxes">
+            <div class="chart-info-item">
+                <i class="fas fa-minus"></i>
+                <p><strong>Historical Data:</strong> Solid lines show actual market prices from the past 30 days.</p>
+            </div>
+            <div class="chart-info-item">
+                <i class="fas fa-ellipsis-h"></i>
+                <p><strong>Predicted Data:</strong> Dashed lines show AI-predicted prices for the next 15 days.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Price Statistics -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-calculator"></i> Price Statistics</h2>
+        </div>
+        <div class="stats-tables">
+            <div class="stat-table-container">
+                <h3>Red Arecanut</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Historical (30d)</th>
+                            <th>Predicted (15d)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Average Price</td>
+                            <td id="red-hist-avg">₹450</td>
+                            <td id="red-pred-avg">₹460</td>
+                        </tr>
+                        <tr>
+                            <td>Highest Price</td>
+                            <td id="red-hist-max">₹470</td>
+                            <td id="red-pred-max">₹480</td>
+                        </tr>
+                        <tr>
+                            <td>Lowest Price</td>
+                            <td id="red-hist-min">₹430</td>
+                            <td id="red-pred-min">₹440</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stat-table-container">
+                <h3>White Arecanut</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Historical (30d)</th>
+                            <th>Predicted (15d)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Average Price</td>
+                            <td id="white-hist-avg">₹520</td>
+                            <td id="white-pred-avg">₹530</td>
+                        </tr>
+                        <tr>
+                            <td>Highest Price</td>
+                            <td id="white-hist-max">₹540</td>
+                            <td id="white-pred-max">₹550</td>
+                        </tr>
+                        <tr>
+                            <td>Lowest Price</td>
+                            <td id="white-hist-min">₹500</td>
+                            <td id="white-pred-min">₹510</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Insights -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-lightbulb"></i> Market Insights</h2>
+        </div>
+        <div class="insights-grid">
+            <div class="insight-card trend-up">
+                <div class="insight-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <h3>Upward Trend</h3>
+                <p>Prices are expected to rise slightly over the next 2 weeks due to seasonal demand.</p>
+            </div>
+
+            <div class="insight-card stable">
+                <div class="insight-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h3>Stable Market</h3>
+                <p>No major price fluctuations expected. Good time for planned selling.</p>
+            </div>
+
+            <div class="insight-card best-time">
+                <div class="insight-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3>Best Selling Time</h3>
+                <p>Consider selling in the next 7-10 days to maximize returns.</p>
+            </div>
+
+            <div class="insight-card factors">
+                <div class="insight-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h3>Market Factors</h3>
+                <p>Weather conditions and harvest season may influence actual prices.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <i class="fas fa-info-circle"></i>
+        <p><strong>Disclaimer:</strong> Price predictions are based on historical data and ML algorithms. 
+        Actual market prices may vary due to various factors including weather, demand, supply, and market conditions. 
+        Use this information as a guide only.</p>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{{ url_for('market_prices') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Market Prices
+        </a>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Parse data from Flask
+const histLabels = {{ hist_labels|safe }};
+const histRed = {{ hist_red|safe }};
+const histWhite = {{ hist_white|safe }};
+const predLabels = {{ pred_labels|safe }};
+const predRed = {{ pred_red|safe }};
+const predWhite = {{ pred_white|safe }};
+
+// Combine labels
+const allLabels = [...histLabels, ...predLabels];
+
+// Create arrays with null values for prediction period in historical data
+const historicalRed = [...histRed, ...Array(predLabels.length).fill(null)];
+const historicalWhite = [...histWhite, ...Array(predLabels.length).fill(null)];
+
+// Create arrays with null values for historical period in prediction data
+const predictedRed = [...Array(histLabels.length).fill(null), ...predRed];
+const predictedWhite = [...Array(histLabels.length).fill(null), ...predWhite];
+
+// Create chart
+const ctx = document.getElementById('predictionChart').getContext('2d');
+let predictionChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: allLabels,
+        datasets: [
+            {
+                label: 'Red Arecanut (Historical)',
+                data: historicalRed,
+                borderColor: '#DC3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: false
+            },
+            {
+                label: 'Red Arecanut (Predicted)',
+                data: predictedRed,
+                borderColor: '#DC3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.05)',
+                borderWidth: 3,
+                borderDash: [10, 5],
+                tension: 0.4,
+                fill: false
+            },
+            {
+                label: 'White Arecanut (Historical)',
+                data: historicalWhite,
+                borderColor: '#28A745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: false
+            },
+            {
+                label: 'White Arecanut (Predicted)',
+                data: predictedWhite,
+                borderColor: '#28A745',
+                backgroundColor: 'rgba(40, 167, 69, 0.05)',
+                borderWidth: 3,
+                borderDash: [10, 5],
+                tension: 0.4,
+                fill: false
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(context) {
+                        if (context.parsed.y !== null) {
+                            return context.dataset.label + ': ₹' + context.parsed.y.toFixed(2);
+                        }
+                        return null;
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: false,
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + value;
+                    }
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+function showChart(type) {
+    // Update active button
+    document.querySelectorAll('.chart-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.closest('.chart-btn').classList.add('active');
+    
+    // Show/hide datasets
+    predictionChart.data.datasets.forEach((dataset, index) => {
+        if (type === 'both') {
+            dataset.hidden = false;
+        } else if (type === 'red') {
+            dataset.hidden = index >= 2;
+        } else if (type === 'white') {
+            dataset.hidden = index < 2;
+        }
+    });
+    
+    predictionChart.update();
+}
+
+// Calculate statistics
+function calculateStats(data) {
+    const validData = data.filter(val => val !== null);
+    return {
+        avg: (validData.reduce((a, b) => a + b, 0) / validData.length).toFixed(2),
+        max: Math.max(...validData).toFixed(2),
+        min: Math.min(...validData).toFixed(2)
+    };
+}
+
+const redHistStats = calculateStats(histRed);
+const redPredStats = calculateStats(predRed);
+const whiteHistStats = calculateStats(histWhite);
+const whitePredStats = calculateStats(predWhite);
+
+document.getElementById('red-hist-avg').textContent = '₹' + redHistStats.avg;
+document.getElementById('red-hist-max').textContent = '₹' + redHistStats.max;
+document.getElementById('red-hist-min').textContent = '₹' + redHistStats.min;
+document.getElementById('red-pred-avg').textContent = '₹' + redPredStats.avg;
+document.getElementById('red-pred-max').textContent = '₹' + redPredStats.max;
+document.getElementById('red-pred-min').textContent = '₹' + redPredStats.min;
+
+document.getElementById('white-hist-avg').textContent = '₹' + whiteHistStats.avg;
+document.getElementById('white-hist-max').textContent = '₹' + whiteHistStats.max;
+document.getElementById('white-hist-min').textContent = '₹' + whiteHistStats.min;
+document.getElementById('white-pred-avg').textContent = '₹' + whitePredStats.avg;
+document.getElementById('white-pred-max').textContent = '₹' + whitePredStats.max;
+document.getElementById('white-pred-min').textContent = '₹' + whitePredStats.min;
+</script>
+{% endblock %}

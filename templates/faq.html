@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ & Support - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 40px auto;">
+    <div class="page-header">
+        <h1><i class="fas fa-question-circle"></i> Frequently Asked Questions</h1>
+        <p>Find answers to common questions about Adike Mitra</p>
+    </div>
+
+    <div class="faq-container">
+        <!-- Disease Detection Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-leaf" style="color: #10b981;"></i> Disease Detection</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>What diseases can Adike Mitra detect?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Adike Mitra can detect two major arecanut diseases:</p>
+                    <ul>
+                        <li><strong>Yellow Leaf Disease (AYLD):</strong> 97.7% accuracy - detected from leaf images</li>
+                        <li><strong>Fruit Rot/Koleroga:</strong> 98.9% accuracy - detected from fruit images</li>
+                    </ul>
+                    <p>You can upload images of leaves or fruits and select the appropriate detection mode.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>How do I upload an image for disease detection?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Follow these steps:</p>
+                    <ol>
+                        <li>Go to <strong>Disease Detection</strong> from the navigation menu</li>
+                        <li>Select the detection mode (Leaf, Fruit, or Both)</li>
+                        <li>Click "Choose File" and select an image from your device</li>
+                        <li>Supported formats: JPG, PNG, JPEG, GIF (max 16MB)</li>
+                        <li>Click "Detect Disease" to get results</li>
+                    </ol>
+                    <p><strong>Important:</strong> Upload ONLY arecanut plant images for accurate results.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>What does "Both (Leaf & Fruit)" mode do?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>When you select "Both" mode, the system runs both AI models (Yellow Leaf and Fruit Rot) on your image and shows the disease with the highest confidence.</p>
+                    <p>This is useful when:</p>
+                    <ul>
+                        <li>You're not sure which part of the plant the image shows</li>
+                        <li>You want comprehensive analysis</li>
+                        <li>The image contains both leaves and fruits</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Can I download the detection results?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! After receiving detection results, you can:</p>
+                    <ul>
+                        <li>Click the <strong>"Download PDF Report"</strong> button to save a professional report</li>
+                        <li>The PDF includes the image, detection results, confidence score, and treatment recommendations</li>
+                        <li>View all past detections in your Dashboard under "Detection Records"</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Irrigation Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-tint" style="color: #3b82f6;"></i> Smart Irrigation</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>How does smart irrigation work?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Smart Irrigation helps you manage water efficiently:</p>
+                    <ul>
+                        <li><strong>Manual Control:</strong> Turn the pump ON/OFF with a click</li>
+                        <li><strong>Scheduled Mode:</strong> Set duration (minutes) and the system auto-stops</li>
+                        <li><strong>Activity Logs:</strong> Track all irrigation activities with timestamps</li>
+                        <li><strong>Dashboard Integration:</strong> View recent activities at a glance</li>
+                    </ul>
+                    <p><em>Note: This feature is available for Farmers only.</em></p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Can I schedule irrigation in advance?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Currently, you can set a duration for how long the pump should run, and it will automatically turn off after that period.</p>
+                    <p>For example:</p>
+                    <ul>
+                        <li>Set duration to 30 minutes</li>
+                        <li>Click "Start Pump"</li>
+                        <li>System will auto-stop after 30 minutes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Prices Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-chart-line" style="color: #f59e0b;"></i> Market Prices</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>How are market prices determined?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Adike Mitra provides real-time arecanut market prices from various sources:</p>
+                    <ul>
+                        <li><strong>CAMPCO Mangalore:</strong> Major cooperative prices</li>
+                        <li><strong>Grade-based pricing:</strong> Grade A, B, C classifications</li>
+                        <li><strong>Red & White varieties:</strong> Separate pricing for both</li>
+                        <li><strong>Historical trends:</strong> 30-day price charts for analysis</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>What is the Price Prediction feature?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Price Prediction uses AI to forecast future arecanut prices based on:</p>
+                    <ul>
+                        <li>Historical price trends (30 days)</li>
+                        <li>Seasonal patterns</li>
+                        <li>Market fluctuations</li>
+                    </ul>
+                    <p>Enter a future date (up to 30 days ahead) to get predicted prices for Red and White arecanut.</p>
+                    <p><strong>Note:</strong> Predictions are estimates and actual prices may vary based on market conditions.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-cloud-sun" style="color: #8b5cf6;"></i> Weather Advisory</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Where does weather data come from?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Currently, Adike Mitra displays simulated weather data for demonstration purposes.</p>
+                    <p>The weather page shows:</p>
+                    <ul>
+                        <li>Current temperature, humidity, wind speed</li>
+                        <li>7-day forecast with daily predictions</li>
+                        <li>Agricultural advisories based on conditions</li>
+                        <li>Best practices for current weather</li>
+                    </ul>
+                    <p><em>Future updates will integrate real weather APIs for your location.</em></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account & Technical Section -->
+        <div class="faq-section">
+            <h2><i class="fas fa-cog" style="color: #6366f1;"></i> Account & Technical</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>How do I reset my password?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>To change your password:</p>
+                    <ol>
+                        <li>Login to your account</li>
+                        <li>Click on <strong>"Profile"</strong> in the navigation menu</li>
+                        <li>Scroll to the "Change Password" section</li>
+                        <li>Enter your current password and new password</li>
+                        <li>Click "Change Password"</li>
+                    </ol>
+                    <p><strong>Forgot password?</strong> Currently, contact support for password reset assistance.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Can I update my profile information?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! Go to <strong>Profile</strong> from the navigation menu to update:</p>
+                    <ul>
+                        <li>Full Name</li>
+                        <li>Email Address (for notifications)</li>
+                        <li>Location</li>
+                        <li>Farm Size</li>
+                    </ul>
+                    <p><em>Note: Phone number and User Type cannot be changed for security reasons.</em></p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>How do I delete detection records?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>You can manage your detection records from the Dashboard:</p>
+                    <ul>
+                        <li><strong>Delete individual records:</strong> Click the trash icon next to any detection</li>
+                        <li><strong>Clear all detections:</strong> Use the "Clear All" button in the Recent Disease Detections section</li>
+                        <li><strong>Clear irrigation logs:</strong> Use the "Clear All" button in the Recent Irrigation Activity section</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>What's the difference between Farmer and Developer accounts?</span>
+                </div>
+                <div class="faq-answer">
+                    <p><strong>Farmer Account:</strong></p>
+                    <ul>
+                        <li>Access to all features: Disease Detection, Irrigation, Weather, Prices</li>
+                        <li>Personal dashboard with activity tracking</li>
+                        <li>Irrigation controls available</li>
+                    </ul>
+                    <p><strong>Developer/Admin Account:</strong></p>
+                    <ul>
+                        <li>All Farmer features EXCEPT irrigation controls</li>
+                        <li>Access to Admin Dashboard</li>
+                        <li>View system statistics and all user activities</li>
+                        <li>Monitor platform usage and performance</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleAnswer(this)">
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Is my data secure?</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes! Adike Mitra takes security seriously:</p>
+                    <ul>
+                        <li><strong>Password encryption:</strong> All passwords are hashed and never stored in plain text</li>
+                        <li><strong>Session management:</strong> Secure login sessions with timeouts</li>
+                        <li><strong>Data privacy:</strong> Your detection records and irrigation logs are private to your account</li>
+                        <li><strong>Image storage:</strong> Uploaded images are stored securely on the server</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-card">
+            <div style="text-align: center;">
+                <i class="fas fa-headset" style="font-size: 3em; color: white; margin-bottom: 15px;"></i>
+                <h2 style="color: white;">Still Need Help?</h2>
+                <p style="color: rgba(255, 255, 255, 0.95); margin: 15px 0; font-size: 1.1rem;">Can't find what you're looking for? We're here to help!</p>
+                <div style="margin-top: 25px;">
+                    <a href="mailto:support@adikemitra.com" class="btn btn-primary" style="margin: 0 10px; background: white; color: #667eea;">
+                        <i class="fas fa-envelope"></i> Email Support
+                    </a>
+                    <a href="tel:+918123456789" class="btn btn-secondary" style="margin: 0 10px; background: rgba(255, 255, 255, 0.2); color: white; border: 2px solid white;">
+                        <i class="fas fa-phone"></i> Call Us
+                    </a>
+                </div>
+                <p style="margin-top: 20px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem;">
+                    Support Hours: Monday - Saturday, 9:00 AM - 6:00 PM IST
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.faq-container {
+    padding: 20px 0;
+}
+
+.faq-section {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.faq-section h2 {
+    margin: 0 0 25px 0;
+    font-size: 1.5em;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.faq-item {
+    margin-bottom: 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.faq-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.faq-question {
+    padding: 18px 20px;
+    background: #f9fafb;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+    color: #333;
+    transition: all 0.3s;
+}
+
+.faq-question:hover {
+    background: #f3f4f6;
+}
+
+.faq-question i.fa-chevron-right {
+    color: #667eea;
+    transition: transform 0.3s;
+    font-size: 0.9em;
+}
+
+.faq-item.active .faq-question i.fa-chevron-right {
+    transform: rotate(90deg);
+}
+
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background: white;
+}
+
+.faq-item.active .faq-answer {
+    max-height: 1000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.faq-answer p,
+.faq-answer ul,
+.faq-answer ol {
+    padding: 20px;
+    margin: 0;
+    color: #555;
+    line-height: 1.7;
+}
+
+.faq-answer ul,
+.faq-answer ol {
+    padding-left: 50px;
+}
+
+.faq-answer li {
+    margin: 8px 0;
+}
+
+.faq-answer strong {
+    color: #333;
+}
+
+.support-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.support-card h2 {
+    margin: 0 0 10px 0;
+    color: white;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: white;
+    color: #667eea;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .faq-section {
+        padding: 20px 15px;
+    }
+    
+    .support-card {
+        padding: 30px 20px;
+    }
+    
+    .btn {
+        display: block;
+        margin: 10px 0 !important;
+    }
+}
+</style>
+
+<script>
+function toggleAnswer(element) {
+    const faqItem = element.parentElement;
+    const isActive = faqItem.classList.contains('active');
+    
+    // Close all other items
+    document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    // Toggle current item
+    if (!isActive) {
+        faqItem.classList.add('active');
+    }
+}
+
+// Open first FAQ item by default
+document.addEventListener('DOMContentLoaded', function() {
+    const firstQuestion = document.querySelector('.faq-question');
+    if (firstQuestion) {
+        toggleAnswer(firstQuestion);
+    }
+});
+</script>
+{% endblock %}

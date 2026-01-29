@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Adike Mitra{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-seedling"></i>
+                <span>Adike Mitra</span>
+            </div>
+            <div class="nav-links">
+                {% if session.user_id %}
+                    <a href="{{ url_for('user_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+                    {% if session.user_type == 'Developer' %}
+                        <a href="{{ url_for('admin_dashboard') }}"><i class="fas fa-user-shield"></i> Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('disease_detection') }}"><i class="fas fa-leaf"></i> Disease Detection</a>
+                    <a href="{{ url_for('weather_advisory') }}"><i class="fas fa-cloud-sun"></i> Weather</a>
+                    <a href="{{ url_for('market_prices') }}"><i class="fas fa-chart-line"></i> Prices</a>
+                    {% if session.user_type == 'Farmer' %}
+                        <a href="{{ url_for('smart_irrigation') }}"><i class="fas fa-tint"></i> Irrigation</a>
+                    {% endif %}
+                    <a href="{{ url_for('faq') }}"><i class="fas fa-question-circle"></i> FAQ</a>
+                    <a href="{{ url_for('profile') }}"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                    <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a>
+                    <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register</a>
+                {% endif %}
+            </div>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <span>{{ message }}</span>
+                        <button class="close-alert">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section footer-about">
+                <h3><i class="fas fa-seedling"></i> Adike Mitra</h3>
+                <p>Empowering Arecanut Farmers with Smart Technology</p>
+                <p class="footer-tagline">Transforming Traditional Farming with AI & IoT</p>
+                <div class="footer-stats-mini">
+                    <div class="mini-stat">
+                        <strong>97.7%</strong>
+                        <span>AI Accuracy</span>
+                    </div>
+                    <div class="mini-stat">
+                        <strong>50+</strong>
+                        <span>Farmers</span>
+                    </div>
+                    <div class="mini-stat">
+                        <strong>24/7</strong>
+                        <span>Support</span>
+                    </div>
+                </div>
+                <div class="footer-social">
+                    <a href="#" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    {% if session.user_id %}
+                        <li><a href="{{ url_for('user_dashboard') }}"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="{{ url_for('disease_detection') }}"><i class="fas fa-leaf"></i> Disease Detection</a></li>
+                        <li><a href="{{ url_for('weather_advisory') }}"><i class="fas fa-cloud-sun"></i> Weather Advisory</a></li>
+                        <li><a href="{{ url_for('market_prices') }}"><i class="fas fa-chart-line"></i> Market Prices</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                        <li><a href="{{ url_for('register') }}"><i class="fas fa-user-plus"></i> Register</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('faq') }}"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#"><i class="fas fa-book"></i> User Guide</a></li>
+                    <li><a href="#"><i class="fas fa-video"></i> Video Tutorials</a></li>
+                    <li><a href="#"><i class="fas fa-newspaper"></i> Blog</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a></li>
+                    <li><a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contact & Support</h4>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="fas fa-envelope"></i> 
+                        <div>
+                            <strong>Email:</strong>
+                            <a href="mailto:support@adikemitra.com">support@adikemitra.com</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone"></i> 
+                        <div>
+                            <strong>Phone:</strong>
+                            <a href="tel:+918123456789">+91 81234 56789</a>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-map-marker-alt"></i> 
+                        <div>
+                            <strong>Location:</strong>
+                            <span>Karnataka, India</span>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-clock"></i> 
+                        <div>
+                            <strong>Hours:</strong>
+                            <span>Mon - Sat: 9 AM - 6 PM IST</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-divider"></div>
+        
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <div class="footer-copyright">
+                    <p><i class="fas fa-copyright"></i> 2025 Adike Mitra. All rights reserved.</p>
+                    <p class="footer-legal">
+                        <a href="#">Privacy Policy</a> <span class="separator">|</span> 
+                        <a href="#">Terms of Service</a> <span class="separator">|</span> 
+                        <a href="#">Cookie Policy</a>
+                    </p>
+                </div>
+                <div class="footer-team">
+                    <p class="team-label"><i class="fas fa-code"></i> Developed by:</p>
+                    <p class="team-names">Mahammad Salim • Mohammad Fawaz • Shudais Abdul Raheem • Ibrahim Mohammed Irfaz</p>
+                    <p class="footer-institution">St Joseph Engineering College, Mangaluru</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

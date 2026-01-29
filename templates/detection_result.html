@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Detection Result - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-check-circle"></i> Analysis Complete</span>
+                <h1 class="user-name">Detection Result</h1>
+            </div>
+            <div class="header-meta">
+                <span class="location-badge">
+                    <i class="far fa-clock"></i> {{ detection.detected_at.strftime('%b %d, %Y at %I:%M %p') }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-container">
+        <!-- Image Preview -->
+        <div class="result-image-section">
+            <div class="result-image-card">
+                <img src="{{ url_for('static', filename=detection.image_path.replace('static/', '')) }}" alt="Uploaded Image">
+                <p class="image-caption">Uploaded Image</p>
+            </div>
+        </div>
+
+        <!-- Detection Results -->
+        <div class="result-details-section">
+            <div class="result-card">
+                <h2><i class="fas fa-virus"></i> Disease Information</h2>
+                
+                <div class="result-item">
+                    <label>Disease Name:</label>
+                    <div class="result-value">
+                        <span class="badge badge-{{ 'success' if detection.disease_name == 'Healthy' else 'warning' }} badge-large">
+                            {{ detection.disease_name }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if detection.severity != 'None' %}
+                <div class="result-item">
+                    <label>Severity Level:</label>
+                    <div class="result-value">
+                        <span class="badge badge-{{ 'info' if detection.severity == 'mild' else ('warning' if detection.severity == 'moderate' else 'danger') }}">
+                            {{ detection.severity|upper }}
+                        </span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="result-item">
+                    <label>Confidence Level:</label>
+                    <div class="result-value">
+                        <div class="confidence-display">
+                            <div class="confidence-percentage">
+                                <span class="percentage-value">{{ '%.2f' | format(detection.confidence) }}%</span>
+                                <span class="confidence-label">
+                                    {% if detection.confidence >= 95 %}
+                                        <i class="fas fa-check-circle"></i> Highly Accurate
+                                    {% elif detection.confidence >= 85 %}
+                                        <i class="fas fa-check"></i> Accurate
+                                    {% elif detection.confidence >= 75 %}
+                                        <i class="fas fa-info-circle"></i> Good
+                                    {% else %}
+                                        <i class="fas fa-exclamation-circle"></i> Moderate
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: {{ detection.confidence }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if detection.location %}
+                <div class="result-item">
+                    <label>Location:</label>
+                    <div class="result-value">
+                        <i class="fas fa-map-marker-alt"></i> {{ detection.location }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recommendation -->
+            <div class="result-card recommendation-card">
+                <h2><i class="fas fa-hand-holding-medical"></i> Treatment Recommendation</h2>
+                <div class="recommendation-content">
+                    <p>{{ detection.recommendation }}</p>
+                </div>
+            </div>
+
+            <!-- Weather Warning -->
+            <div class="result-card weather-warning-card">
+                <h2><i class="fas fa-cloud-sun-rain"></i> Weather-Based Spraying Advisory</h2>
+                <div class="weather-warning-content">
+                    <p>{{ detection.weather_warning }}</p>
+                </div>
+                <a href="{{ url_for('weather_advisory') }}" class="btn btn-secondary">
+                    <i class="fas fa-cloud"></i> Check Full Weather Forecast
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="result-actions">
+        <a href="{{ url_for('disease_detection') }}" class="btn btn-primary">
+            <i class="fas fa-upload"></i> Upload Another Image
+        </a>
+        <a href="{{ url_for('disease_history') }}" class="btn btn-secondary">
+            <i class="fas fa-history"></i> View History
+        </a>
+        <a href="{{ url_for('download_detection_pdf', detection_id=detection.id) }}" class="btn btn-success">
+            <i class="fas fa-file-pdf"></i> Download PDF Report
+        </a>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Additional Information -->
+    {% if detection.disease_name != 'Healthy' %}
+    <div class="info-section">
+        <h2><i class="fas fa-info-circle"></i> Important Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Early Detection</h3>
+                <p>Early detection is crucial for effective treatment and preventing disease spread.</p>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-spray-can"></i>
+                <h3>Follow Instructions</h3>
+                <p>Always follow recommended dosage and application instructions for pesticides.</p>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-calendar-check"></i>
+                <h3>Regular Monitoring</h3>
+                <p>Continue monitoring your crops regularly after treatment.</p>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-user-md"></i>
+                <h3>Expert Consultation</h3>
+                <p>For severe cases, consult agricultural experts or extension officers.</p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="healthy-message">
+        <i class="fas fa-check-circle"></i>
+        <h2>Your Crop Looks Healthy!</h2>
+        <p>Continue regular monitoring and maintain good agricultural practices.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

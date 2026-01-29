@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block title %}Market Prices - Adike Mitra{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header detection-header">
+        <div class="header-content">
+            <div class="header-greeting">
+                <span class="greeting-text"><i class="fas fa-chart-line"></i> Market Insights</span>
+                <h1 class="user-name">Arecanut Market Prices</h1>
+            </div>
+            <div class="header-meta">
+                <button id="refreshPricesBtn" class="btn btn-success" onclick="refreshPrices()">
+                    <i class="fas fa-sync-alt"></i> Refresh Live Prices
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Prices -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-rupee-sign"></i> Current Market Prices</h2>
+            <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                <i class="fas fa-info-circle"></i> Live prices from Mangalore CAMPCO Mandi
+            </p>
+        </div>
+        {% if latest_prices %}
+        <div class="price-cards-grid">
+            <div class="price-card red-arecanut">
+                <div class="price-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h3>Red Arecanut</h3>
+                <div class="price-value">₹{{ "{:,.2f}".format(latest_prices.red_arecanut_price) }}</div>
+                <p>per Quintal</p>
+                <div class="price-meta">
+                    <span class="price-source">{{ latest_prices.source }}</span>
+                    <span class="price-grade">{{ latest_prices.grade }}</span>
+                </div>
+            </div>
+
+            <div class="price-card white-arecanut">
+                <div class="price-icon">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3>White Arecanut</h3>
+                <div class="price-value">₹{{ "{:,.2f}".format(latest_prices.white_arecanut_price) }}</div>
+                <p>per Quintal</p>
+                <div class="price-meta">
+                    <span class="price-source">{{ latest_prices.source }}</span>
+                    <span class="price-grade">{{ latest_prices.grade }}</span>
+                </div>
+            </div>
+
+            <div class="price-card price-diff">
+                <div class="price-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h3>Price Difference</h3>
+                <div class="price-value">₹{{ "{:,.2f}".format(latest_prices.white_arecanut_price - latest_prices.red_arecanut_price) }}</div>
+                <p>White - Red</p>
+                <div class="price-meta">
+                    <span class="price-date">Updated: {{ latest_prices.date.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-chart-line"></i>
+            <p>No price data available at the moment.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Price Trend Chart -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-chart-area"></i> Price Trends (Last 30 Days)</h2>
+        </div>
+        <div class="chart-container">
+            <canvas id="priceChart"></canvas>
+        </div>
+        <div class="chart-legend">
+            <div class="legend-item">
+                <span class="legend-color red"></span>
+                <span>Red Arecanut</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color white"></span>
+                <span>White Arecanut</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Sources -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-store"></i> Market Sources</h2>
+        </div>
+        <div class="sources-grid">
+            <div class="source-card">
+                <i class="fas fa-building"></i>
+                <h3>CAMPCO Mangalore</h3>
+                <p>Central Arecanut & Cocoa Marketing & Processing Cooperative Ltd.</p>
+                <span class="badge badge-success">Active</span>
+            </div>
+
+            <div class="source-card">
+                <i class="fas fa-store-alt"></i>
+                <h3>Local Mandi</h3>
+                <p>Regional agricultural market prices</p>
+                <span class="badge badge-success">Active</span>
+            </div>
+
+            <div class="source-card">
+                <i class="fas fa-globe"></i>
+                <h3>Online Markets</h3>
+                <p>Digital agricultural commodity exchanges</p>
+                <span class="badge badge-info">Coming Soon</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Information -->
+    <div class="content-section">
+        <div class="section-header">
+            <h2><i class="fas fa-star"></i> Arecanut Grades</h2>
+        </div>
+        <div class="grades-table">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Description</th>
+                        <th>Characteristics</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-success">Grade A</span></td>
+                        <td>Premium Quality</td>
+                        <td>Large size, uniform color, no defects</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-warning">Grade B</span></td>
+                        <td>Good Quality</td>
+                        <td>Medium size, minor color variations</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-secondary">Grade C</span></td>
+                        <td>Standard Quality</td>
+                        <td>Small to medium size, some defects allowed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="action-buttons">
+        <a href="{{ url_for('price_prediction') }}" class="btn btn-primary">
+            <i class="fas fa-chart-area"></i> View Price Predictions
+        </a>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Parse data from Flask
+const labels = {{ chart_labels|safe }};
+const redPrices = {{ red_prices|safe }};
+const whitePrices = {{ white_prices|safe }};
+
+// Create chart
+const ctx = document.getElementById('priceChart').getContext('2d');
+const priceChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: 'Red Arecanut',
+                data: redPrices,
+                borderColor: '#DC3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'White Arecanut',
+                data: whitePrices,
+                borderColor: '#28A745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ₹' + context.parsed.y.toFixed(2);
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: false,
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + value;
+                    }
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.05)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        },
+        interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+        }
+    }
+});
+
+// Refresh prices function
+function refreshPrices() {
+    const btn = document.getElementById('refreshPricesBtn');
+    const icon = btn.querySelector('i');
+    
+    // Show loading state
+    btn.disabled = true;
+    icon.classList.add('fa-spin');
+    btn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Updating...';
+    
+    // Call update endpoint
+    fetch('{{ url_for("update_prices_route") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            alert('✅ Prices updated successfully!\n\n' +
+                  'Red Arecanut: ₹' + data.data.red_arecanut_price.toFixed(2) + '/kg\n' +
+                  'White Arecanut: ₹' + data.data.white_arecanut_price.toFixed(2) + '/kg\n\n' +
+                  'Refreshing page...');
+            // Reload page to show new prices
+            location.reload();
+        } else {
+            alert('❌ Failed to update prices: ' + data.message);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Live Prices';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Error updating prices. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Live Prices';
+    });
+}
+</script>
+{% endblock %}
